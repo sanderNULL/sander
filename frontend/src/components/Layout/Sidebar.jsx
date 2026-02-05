@@ -15,7 +15,8 @@ import styles from './Sidebar.module.css'
 const Sidebar = () => {
     const location = useLocation()
     const [isFacturacionOpen, setIsFacturacionOpen] = useState(false)
-    const [isOficinaOpen, setIsOficinaOpen] = useState(false)
+    // Removed specific isOficinaOpen, using generic state map
+    const [openCategories, setOpenCategories] = useState({})
     const [structure, setStructure] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -23,6 +24,7 @@ const Sidebar = () => {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [newCategoryName, setNewCategoryName] = useState("")
     const [nextPrefix, setNextPrefix] = useState("a.")
+    const [currentParentKey, setCurrentParentKey] = useState(null)
 
     const fetchStructure = async () => {
         try {
@@ -45,21 +47,21 @@ const Sidebar = () => {
         if (location.pathname.includes('/facturacion')) {
             setIsFacturacionOpen(true)
         }
-        // Auto-expand logic removed temporarily to fix crash
-        // if (location.pathname.includes('oficina') || location.pathname.includes('dinamica')) {
-        //    setIsOficinaOpen(true)
-        // }
     }, [location.pathname])
 
-    const handleOpenModal = () => {
+    const toggleCategory = (key) => {
+        setOpenCategories(prev => ({ ...prev, [key]: !prev[key] }))
+    }
+
+    const handleOpenModal = (parentKey, parentName, subItems = []) => {
+        setCurrentParentKey(parentKey)
+
         // Calculate next prefix
-        const oficina = structure.find(i => i.name.includes("Gastos de Oficina"))
-        if (oficina && oficina.subItems) {
-            // Filter out "Otros" to get accurate count of lettered items
-            const letteredItems = oficina.subItems.filter(i => !i.key.includes("Otros") && !i.key.includes("Agregar"))
-            const nextChar = String.fromCharCode(97 + letteredItems.length) // 97 is 'a'
-            setNextPrefix(`${nextChar}.`)
-        }
+        // Filter out "Otros" or system items if any
+        const letteredItems = subItems.filter(i => !i.key.includes("Otros") && !i.key.includes("Agregar"))
+        const nextChar = String.fromCharCode(97 + letteredItems.length) // 97 is 'a'
+        setNextPrefix(`${nextChar}.`)
+
         setNewCategoryName("")
         setIsModalOpen(true)
     }
@@ -75,12 +77,20 @@ const Sidebar = () => {
             const res = await fetch('/api/categories/add', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: fullName, key: key })
+                body: JSON.stringify({
+                    name: fullName,
+                    key: key,
+                    parent_key: currentParentKey
+                })
             })
             const data = await res.json()
             if (data.status === 'success') {
                 await fetchStructure() // Refresh menu
                 setIsModalOpen(false)
+                // Auto open the category we just added to
+                if (currentParentKey) {
+                    setOpenCategories(prev => ({ ...prev, [currentParentKey]: true }))
+                }
             } else {
                 alert("Error: " + data.message)
             }
@@ -165,60 +175,51 @@ const Sidebar = () => {
                                     >
                                         <div className={styles.submenuContainer}>
                                             {structure.map((item, idx) => {
-                                                if (item.isGroup) {
-                                                    return (
-                                                        <div key={idx}>
-                                                            <button
-                                                                className={styles.submenuItem}
-                                                                onClick={() => setIsOficinaOpen(!isOficinaOpen)}
-                                                                style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', border: 'none', background: 'transparent', textAlign: 'left', cursor: 'pointer' }}
-                                                            >
-                                                                {item.name}
-                                                                <ChevronDown size={14} className={isOficinaOpen ? styles.rotate : ''} />
-                                                            </button>
-                                                            <AnimatePresence>
-                                                                {isOficinaOpen && (
-                                                                    <motion.div
-                                                                        initial={{ height: 0, opacity: 0 }}
-                                                                        animate={{ height: 'auto', opacity: 1 }}
-                                                                        exit={{ height: 0, opacity: 0 }}
-                                                                        style={{ overflow: 'hidden' }}
-                                                                    >
-                                                                        <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '0.5rem' }}>
-                                                                            {item.subItems.map((sub, sIdx) => {
-                                                                                // Check if it's the "Otros" or "Add" placeholder logic
-                                                                                // Actually, user wants "Agregar más" to be funcional.
-                                                                                // We will render all subitems.
-                                                                                // AND append a special "Agregar más" button at the end IF we are in this specific group
-                                                                                return (
-                                                                                    <Link key={sIdx} to={getLinkPath(sub)} className={`${styles.submenuItem} ${location.pathname === getLinkPath(sub) ? styles.active : ''}`} style={{ fontSize: '0.8rem' }}>
-                                                                                        {sub.name}
-                                                                                    </Link>
-                                                                                )
-                                                                            })}
+                                                const isOpen = openCategories[item.key] || false
+                                                const hasSubItems = item.subItems && item.subItems.length > 0
 
-                                                                            {/* Botón Agregar Más */}
-                                                                            <button
-                                                                                onClick={handleOpenModal}
-                                                                                className={styles.submenuItem}
-                                                                                style={{ fontSize: '0.8rem', color: '#6366f1', textAlign: 'left', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
-                                                                            >
-                                                                                <Plus size={14} /> Agregar más
-                                                                            </button>
-                                                                        </div>
-                                                                    </motion.div>
-                                                                )}
-                                                            </AnimatePresence>
-                                                        </div>
-                                                    )
-                                                } else {
-                                                    const path = getLinkPath(item)
-                                                    return (
-                                                        <Link key={idx} to={path} className={`${styles.submenuItem} ${location.pathname === path ? styles.active : ''}`}>
+                                                // Always render as expandable button
+                                                return (
+                                                    <div key={idx}>
+                                                        <button
+                                                            className={styles.submenuItem}
+                                                            onClick={() => toggleCategory(item.key)}
+                                                            style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', border: 'none', background: 'transparent', textAlign: 'left', cursor: 'pointer' }}
+                                                        >
                                                             {item.name}
-                                                        </Link>
-                                                    )
-                                                }
+                                                            <ChevronDown size={14} className={isOpen ? styles.rotate : ''} />
+                                                        </button>
+                                                        <AnimatePresence>
+                                                            {isOpen && (
+                                                                <motion.div
+                                                                    initial={{ height: 0, opacity: 0 }}
+                                                                    animate={{ height: 'auto', opacity: 1 }}
+                                                                    exit={{ height: 0, opacity: 0 }}
+                                                                    style={{ overflow: 'hidden' }}
+                                                                >
+                                                                    <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '0.5rem' }}>
+                                                                        {hasSubItems && item.subItems.map((sub, sIdx) => {
+                                                                            return (
+                                                                                <Link key={sIdx} to={getLinkPath(sub)} className={`${styles.submenuItem} ${location.pathname === getLinkPath(sub) ? styles.active : ''}`} style={{ fontSize: '0.8rem' }}>
+                                                                                    {sub.name}
+                                                                                </Link>
+                                                                            )
+                                                                        })}
+
+                                                                        {/* Botón Agregar Más */}
+                                                                        <button
+                                                                            onClick={() => handleOpenModal(item.key, item.name, item.subItems)}
+                                                                            className={styles.submenuItem}
+                                                                            style={{ fontSize: '0.8rem', color: '#6366f1', textAlign: 'left', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem' }}
+                                                                        >
+                                                                            <Plus size={14} /> Agregar más
+                                                                        </button>
+                                                                    </div>
+                                                                </motion.div>
+                                                            )}
+                                                        </AnimatePresence>
+                                                    </div>
+                                                )
                                             })}
                                         </div>
                                     </motion.div>

@@ -109,38 +109,39 @@ def get_structure():
 class AddCategoryRequest(BaseModel):
     name: str # The display name (e.g. "d. Nuevo Gasto")
     key: str # The folder name (e.g. "Nuevo Gasto")
+    parent_key: str # The key of the parent category (e.g. "Honorarios")
 
 @app.post("/api/categories/add")
 def add_subcategory(req: AddCategoryRequest):
     structure = load_structure()
     
-    # Logic specifically for "Gastos de Oficina" (Index 4)
-    # In a more generic system, we'd pass ID or parent key
-    oficina_group = structure[4] 
+    # Find parent category
+    parent = None
+    for item in structure:
+        if item["key"] == req.parent_key:
+            parent = item
+            break
+            
+    if not parent:
+         return {"status": "error", "message": "Categoría padre no encontrada"}
+    
+    # Ensure it's a group
+    if not parent.get("isGroup"):
+        parent["isGroup"] = True
+        parent["subItems"] = []
     
     # Validation
-    for sub in oficina_group["subItems"]:
+    for sub in parent["subItems"]:
         if sub["key"] == req.key:
             return {"status": "error", "message": "Categoría ya existe"}
 
-    # Add before the last item (assuming last is always "+ Otros/Agregar")
-    # Actually, user requested dynamic sequence a, b, c...
-    # We will append it before the last item if it looks like a "button", or just append.
-    # The existing structure has "+ Otros Gastos" at the end.
-    
     new_item = { "name": req.name, "key": req.key }
     
-    # Insert before the last element if possible, to keep "+ Otros" at bottom?
-    # User requirement: "la susecion que continue... a, b, c... al agregar nuevos"
-    # The current list ends with "Otros Gastos" (index 3). We should probably insert before it or just append.
-    # Let's insert *before* the last item which is usually "Otros Gastos" or "Agregar Mas"
-    
     # Add new item
-    oficina_group["subItems"].append(new_item)
+    parent["subItems"].append(new_item)
     
     # Sort subitems by name to ensure order (a., b., c., ...)
-    # simple string sort works because of the prefixes
-    oficina_group["subItems"].sort(key=lambda x: x["name"])
+    parent["subItems"].sort(key=lambda x: x["name"])
          
     save_structure(structure)
     ensure_folders_from_structure()
