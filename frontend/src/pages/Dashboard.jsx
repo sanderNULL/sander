@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { DollarSign, FileText, PieChart } from 'lucide-react'
 
 const Dashboard = () => {
@@ -27,7 +27,7 @@ const Dashboard = () => {
     }
 
     const getData = (key) => {
-        if (!financialData) return { total: 0, cantidad_facturas: 0, centrales: { total: 0, cantidad: 0 }, campo: { total: 0, cantidad: 0 } }
+        if (!financialData || !financialData.detalles) return { total: 0, cantidad_facturas: 0, centrales: { total: 0, cantidad: 0 }, campo: { total: 0, cantidad: 0 } }
         const d = financialData.detalles.find(d => d.categoria === key)
         return d || { total: 0, cantidad_facturas: 0, centrales: { total: 0, cantidad: 0 }, campo: { total: 0, cantidad: 0 } }
     }
@@ -87,7 +87,7 @@ const Dashboard = () => {
                                 <DollarSign size={16} /> Gasto Total del Proyecto
                             </div>
                             <div style={{ fontSize: '2.5rem', fontWeight: 800, marginTop: '0.5rem', color: '#111827' }}>
-                                ${financialData.gran_total.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                                ${(financialData.gran_total || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
                             </div>
                         </div>
 
@@ -96,7 +96,7 @@ const Dashboard = () => {
                                 <FileText size={16} /> Facturas Procesadas
                             </div>
                             <div style={{ fontSize: '2.5rem', fontWeight: 800, marginTop: '0.5rem', color: '#111827' }}>
-                                {financialData.detalles.reduce((acc, curr) => acc + curr.cantidad_facturas, 0)}
+                                {(financialData.detalles || []).reduce((acc, curr) => acc + curr.cantidad_facturas, 0)}
                             </div>
                         </div>
                     </div>
@@ -117,7 +117,7 @@ const Dashboard = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {structure.map((item, idx) => {
+                                    {Array.isArray(structure) && structure.map((item, idx) => {
                                         if (item.isGroup) {
                                             const groupStats = getGroupTotal(item)
                                             return (

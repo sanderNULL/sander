@@ -6,11 +6,17 @@ import AutomaticValidationWrapper from './pages/Facturacion/AutomaticValidationW
 import CargaArchivos from './pages/Facturacion/CargaArchivos'
 import AdminPanel from './pages/Admin/AdminPanel'
 
+import ErrorBoundary from './components/ErrorBoundary'
+
 function App() {
     return (
         <Routes>
             <Route path="/" element={<Layout />}>
-                <Route index element={<Dashboard />} />
+                <Route index element={
+                    <ErrorBoundary>
+                        <Dashboard />
+                    </ErrorBoundary>
+                } />
                 <Route path="admin" element={<AdminPanel />} />
                 <Route path="facturacion/carga" element={<CargaArchivos />} />
 
