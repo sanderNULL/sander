@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": null,
+  "rfc_emisor": null,
+  "rfc_receptor": null,
+  "nombre_emisor": null,
+  "nombre_receptor": null,
+  "puesto": null,
+  "subtotal": "0.00",
+  "total_deducciones": "0.00",
+  "total_neto": "0.00",
+  "categoria": "General",
+  "origen": "Centrales"
+}

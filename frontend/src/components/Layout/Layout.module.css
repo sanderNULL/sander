@@ -1,0 +1,15 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.main {
+    flex: 1;
+    margin-left: 280px;
+    padding: 0rem;
+    overflow-y: auto;
+    width: calc(100% - 280px);
+    /* Explicitly set width to fill remaining space */
+    /* Prevents overflow issues */
+}

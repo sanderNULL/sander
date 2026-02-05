@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "28F8F4F9-593A-4797-BCA9-D8A3349F7135",
+  "rfc_emisor": "RDI841003QJ4",
+  "rfc_receptor": "DIC9003083G6",
+  "nombre_emisor": "Radiomóvil Dipsa, S.A. de C.V.",
+  "nombre_receptor": "DEMAR INSTALADORA Y CONSTRUCTORA",
+  "puesto": "Tipo Base Importe",
+  "subtotal": "13275.17",
+  "total_deducciones": "",
+  "total_neto": "24500",
+  "categoria": "Comunicaciones y Radios",
+  "origen": "Campo"
+}

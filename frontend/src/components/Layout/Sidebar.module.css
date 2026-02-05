@@ -1,0 +1,130 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100vh;
+    background: var(--color-bg-surface);
+    border-right: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem 1rem;
+    z-index: 50;
+    overflow-y: auto;
+}
+
+.logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--color-primary);
+    margin-bottom: 2.5rem;
+    padding-left: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.menuItemButton {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    color: var(--color-text-secondary);
+    font-weight: 500;
+    border: none;
+    background: transparent;
+    text-align: left;
+    transition: all 0.2s;
+}
+
+.menuItemContent {
+    display: flex;
+    align-items: center;
+}
+
+.menuItemButton:hover,
+.menuItemButton.active {
+    background-color: #f9fafb;
+    color: var(--color-text-main);
+}
+
+.icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.75rem;
+    color: #9ca3af;
+}
+
+.menuItemButton:hover .icon,
+.menuItemButton.active .icon {
+    color: var(--color-primary);
+}
+
+.chevron {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.2s;
+}
+
+.rotate {
+    transform: rotate(180deg);
+}
+
+.submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+}
+
+.submenuItem {
+    display: block;
+    padding: 0.6rem 0.75rem 0.6rem 3rem;
+    /* Indented text */
+    color: var(--color-text-secondary);
+    font-size: 0.875rem;
+    text-decoration: none;
+    border-radius: 0.5rem;
+    margin-top: 2px;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.submenuItem:hover {
+    color: var(--color-text-main);
+    background-color: #f9fafb;
+}
+
+.submenuItem.active {
+    color: var(--color-primary);
+    font-weight: 600;
+    background-color: #eff6ff;
+}
+
+/* Decorator line for hierarchy */
+.submenuContainer {
+    position: relative;
+}
+
+.submenuContainer::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    /* Center of icon */
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background-color: var(--color-border);
+    opacity: 0.5;
+}

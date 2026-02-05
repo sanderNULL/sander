@@ -1,0 +1,56 @@
+[
+  {
+    "name": "I. Honorarios, Sueldos y Prestaciones",
+    "key": "Honorarios"
+  },
+  {
+    "name": "II. Depreciación, Mantenimiento y Rentas",
+    "key": "Depreciación"
+  },
+  {
+    "name": "III. Servicios",
+    "key": "Servicios"
+  },
+  {
+    "name": "IV. Fletes y Acarreos",
+    "key": "Fletes"
+  },
+  {
+    "name": "V. Gastos de Oficina",
+    "isGroup": true,
+    "subItems": [
+      {
+        "name": "a. Papelería y Útiles",
+        "key": "Papelería y Útiles"
+      },
+      {
+        "name": "b. Comunicaciones, Fax...",
+        "key": "Comunicaciones y Radios"
+      },
+      {
+        "name": "c. Equipo de Cómputo",
+        "key": "Equipo de Cómputo"
+      },
+      {
+        "name": "d. sander",
+        "key": "sander"
+      }
+    ]
+  },
+  {
+    "name": "VI. Gastos de Capacitación y Adiestramiento",
+    "key": "Capacitación"
+  },
+  {
+    "name": "VII. Seguridad e Higiene",
+    "key": "Seguridad"
+  },
+  {
+    "name": "VIII. Seguros y Fianzas",
+    "key": "Seguros"
+  },
+  {
+    "name": "IX. Trabajos Previos y Auxiliares",
+    "key": "Trabajos Previos"
+  }
+]

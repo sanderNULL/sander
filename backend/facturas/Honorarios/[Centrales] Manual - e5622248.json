@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "9544d0a5-74ac-403e-b7d5-39a5b0f12ff1",
+  "rfc_emisor": "TESTFILTER",
+  "rfc_receptor": "REC010101000",
+  "nombre_emisor": "Test Filter Emisor",
+  "nombre_receptor": "santiago notario de la crzu ",
+  "puesto": "control de obra ",
+  "subtotal": "500.00",
+  "total_deducciones": "0.00",
+  "total_neto": "0.00",
+  "categoria": "Honorarios",
+  "origen": "Campo"
+}

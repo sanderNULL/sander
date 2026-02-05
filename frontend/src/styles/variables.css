@@ -1,0 +1,36 @@
+:root {
+  /* Colors */
+  --color-primary: #6366f1;
+  /* Indigo 500 - Matches "Purple" tone requested */
+  --color-primary-dark: #4f46e5;
+  --color-secondary: #10b981;
+  /* Green for Badges/Buttons */
+  --color-secondary-dark: #059669;
+
+  --color-bg-body: #f3f4f6;
+  /* Light Gray */
+  --color-bg-surface: #ffffff;
+  --color-text-main: #111827;
+  --color-text-secondary: #6b7280;
+  --color-border: #e5e7eb;
+
+  /* Dimensions */
+  --sidebar-width: 220px;
+  --header-height: 64px;
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Utils */
+.text-bold {
+  font-weight: 600;
+}
+
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-xs {
+  font-size: 0.75rem;
+}

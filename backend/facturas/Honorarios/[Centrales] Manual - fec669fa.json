@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "c1849980-895b-4742-8ee4-ebde2323b17d",
+  "rfc_emisor": "",
+  "rfc_receptor": "",
+  "nombre_emisor": "",
+  "nombre_receptor": "",
+  "puesto": "",
+  "subtotal": "0.00",
+  "total_deducciones": "0.00",
+  "total_neto": "0.00",
+  "categoria": "Honorarios",
+  "origen": "Campo"
+}

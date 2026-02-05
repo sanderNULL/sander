@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "508f6bca-5637-4166-baaf-31cc076fc2e1",
+  "rfc_emisor": "ORIGINAL",
+  "rfc_receptor": null,
+  "nombre_emisor": "Original Name",
+  "nombre_receptor": null,
+  "puesto": null,
+  "subtotal": "100.00",
+  "total_deducciones": "0.00",
+  "total_neto": "0.00",
+  "categoria": "Honorarios",
+  "origen": "Centrales"
+}
