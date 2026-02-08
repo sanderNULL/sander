@@ -121,6 +121,49 @@ const Sidebar = () => {
         }
     }
 
+    const [isRenameModalOpen, setIsRenameModalOpen] = useState(false)
+    const [renameData, setRenameData] = useState({ parentKey: '', key: '', oldName: '', newName: '' })
+
+    const handleOpenRenameModal = (parentKey, subKey, subName) => {
+        // Strip prefix "a. " from name for editing
+        const cleanName = subName.replace(/^[a-z]\.\s*/, '')
+        setRenameData({ parentKey, key: subKey, oldName: subName, newName: cleanName })
+        setIsRenameModalOpen(true)
+    }
+
+    const handleRenameCategory = async (e) => {
+        e.preventDefault()
+        if (!renameData.newName.trim()) return
+
+        // Reconstruct full name with prefix
+        const prefix = renameData.oldName.match(/^[a-z]\.\s*/)
+        const fullNewName = (prefix ? prefix[0] : '') + renameData.newName.trim()
+        const newKey = renameData.newName.trim() // Assuming key follows name pattern
+
+        try {
+            const res = await fetch('/api/categories/rename', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    parent_key: renameData.parentKey,
+                    key: renameData.key,
+                    new_name: fullNewName,
+                    new_key: newKey
+                })
+            })
+            const data = await res.json()
+            if (data.status === 'success') {
+                await fetchStructure()
+                setIsRenameModalOpen(false)
+                alert("Renombrado correctamente")
+            } else {
+                alert("Error: " + data.message)
+            }
+        } catch (e) {
+            alert("Error de conexión al renombrar")
+        }
+    }
+
     // Helper to determine link path
     const getLinkPath = (item) => {
         // Legacy fix map or dynamic logic
@@ -226,10 +269,39 @@ const Sidebar = () => {
                                                                                     <Link
                                                                                         to={getLinkPath(sub)}
                                                                                         className={`${styles.submenuItem} ${location.pathname === getLinkPath(sub) ? styles.active : ''}`}
-                                                                                        style={{ fontSize: '0.8rem', paddingRight: '2rem' }}
+                                                                                        style={{ fontSize: '0.8rem', paddingRight: '3.5rem' }}
                                                                                     >
                                                                                         {sub.name}
                                                                                     </Link>
+                                                                                    {/* Edit Button */}
+                                                                                    <button
+                                                                                        onClick={(e) => {
+                                                                                            e.preventDefault()
+                                                                                            e.stopPropagation()
+                                                                                            handleOpenRenameModal(item.key, sub.key, sub.name)
+                                                                                        }}
+                                                                                        style={{
+                                                                                            position: 'absolute',
+                                                                                            right: '25px',
+                                                                                            top: '50%',
+                                                                                            transform: 'translateY(-50%)',
+                                                                                            border: 'none',
+                                                                                            background: 'transparent',
+                                                                                            cursor: 'pointer',
+                                                                                            color: '#6366f1',
+                                                                                            padding: '4px',
+                                                                                            display: 'flex',
+                                                                                            alignItems: 'center',
+                                                                                            justifyContent: 'center',
+                                                                                            opacity: 0.6
+                                                                                        }}
+                                                                                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                                                                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
+                                                                                        title="Renombrar apartado"
+                                                                                    >
+                                                                                        <Settings size={12} />
+                                                                                    </button>
+                                                                                    {/* Delete Button */}
                                                                                     <button
                                                                                         onClick={(e) => {
                                                                                             e.preventDefault()
@@ -339,6 +411,56 @@ const Sidebar = () => {
                                     style={{ padding: '0.5rem 1rem', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '0.375rem', cursor: 'pointer' }}
                                 >
                                     Guardar
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Renombrar Categoría */}
+            {isRenameModalOpen && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    background: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{ background: 'white', padding: '2rem', borderRadius: '0.5rem', width: '400px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }}>
+                        <h2 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '1.5rem', color: '#1f2937' }}>Renombrar Categoría</h2>
+                        <form onSubmit={handleRenameCategory}>
+                            <div style={{ marginBottom: '1rem' }}>
+                                <label style={{ display: 'block', fontSize: '0.875rem', fontWeight: 500, color: '#374151', marginBottom: '0.5rem' }}>Nuevo Nombre</label>
+                                <input
+                                    type="text"
+                                    value={renameData.newName}
+                                    onChange={(e) => setRenameData({ ...renameData, newName: e.target.value })}
+                                    style={{ width: '100%', padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.375rem' }}
+                                    autoFocus
+                                />
+                                <p style={{ fontSize: '0.75rem', color: '#6b7280', marginTop: '0.5rem' }}>
+                                    Nota: Esto también renombrará la carpeta de archivos.
+                                </p>
+                            </div>
+                            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '2rem' }}>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsRenameModalOpen(false)}
+                                    style={{ padding: '0.5rem 1rem', border: '1px solid #d1d5db', borderRadius: '0.375rem', background: 'white', color: '#374151', cursor: 'pointer' }}
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    style={{ padding: '0.5rem 1rem', background: '#4f46e5', color: 'white', border: 'none', borderRadius: '0.375rem', cursor: 'pointer' }}
+                                >
+                                    Guardar Cambios
                                 </button>
                             </div>
                         </form>

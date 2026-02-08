@@ -177,6 +177,63 @@ def delete_subcategory(req: DeleteCategoryRequest):
     save_structure(structure)
     return {"status": "success", "structure": structure}
 
+class RenameCategoryRequest(BaseModel):
+    key: str # Current key (folder name)
+    parent_key: str
+    new_name: str # New display name
+    new_key: str # New folder name
+
+@app.post("/api/categories/rename")
+def rename_subcategory(req: RenameCategoryRequest):
+    structure = load_structure()
+    
+    # Find parent
+    parent = None
+    for item in structure:
+        if item["key"] == req.parent_key:
+            parent = item
+            break
+            
+    if not parent:
+         return {"status": "error", "message": "Categoría padre no encontrada"}
+    
+    # Check if new key already exists in this parent (unless it's the same item)
+    for sub in parent.get("subItems", []):
+        if sub["key"] == req.new_key and sub["key"] != req.key:
+             return {"status": "error", "message": "El nombre ya existe en esta categoría"}
+
+    # Find the specific item to update
+    target_sub = None
+    for sub in parent.get("subItems", []):
+        if sub["key"] == req.key:
+            target_sub = sub
+            break
+            
+    if not target_sub:
+        return {"status": "error", "message": "Subcategoría no encontrada"}
+
+    # Rename File System Folder
+    old_path = os.path.join(CARPETA_FACTURAS, req.key)
+    new_path = os.path.join(CARPETA_FACTURAS, req.new_key)
+    
+    try:
+        if os.path.exists(old_path) and req.key != req.new_key:
+            os.rename(old_path, new_path)
+    except Exception as e:
+        return {"status": "error", "message": f"Error al renombrar carpeta: {str(e)}"}
+
+    # Update Structure
+    target_sub["name"] = req.new_name
+    target_sub["key"] = req.new_key
+    
+    # Sort subitems again
+    parent["subItems"].sort(key=lambda x: x["name"])
+
+    save_structure(structure)
+    ensure_folders_from_structure() # Ensure the new folder exists if rename failed or something
+    
+    return {"status": "success", "structure": structure}
+
 @app.get("/")
 def read_index():
     return FileResponse('index.html')
