@@ -8,7 +8,8 @@ import {
     Settings,
     Briefcase,
     Plus,
-    X
+    X,
+    Trash2
 } from 'lucide-react'
 import styles from './Sidebar.module.css'
 
@@ -96,6 +97,27 @@ const Sidebar = () => {
             }
         } catch (error) {
             alert("Error de conexión")
+        }
+    }
+
+    const handleDeleteCategory = async (parentKey, subKey, subName) => {
+        if (!confirm(`¿Estás seguro de eliminar el apartado "${subName}"?\nLos archivos existentes no se borrarán, pero dejarán de ser visibles en esta categoría.`)) return
+
+        try {
+            const res = await fetch('/api/categories/delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ key: subKey, parent_key: parentKey })
+            })
+            const data = await res.json()
+            if (data.status === 'success') {
+                await fetchStructure()
+                alert("Eliminado correctamente")
+            } else {
+                alert("Error: " + data.message)
+            }
+        } catch (e) {
+            alert("Error de conexión al eliminar")
         }
     }
 
@@ -200,9 +222,42 @@ const Sidebar = () => {
                                                                     <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '0.5rem' }}>
                                                                         {hasSubItems && item.subItems.map((sub, sIdx) => {
                                                                             return (
-                                                                                <Link key={sIdx} to={getLinkPath(sub)} className={`${styles.submenuItem} ${location.pathname === getLinkPath(sub) ? styles.active : ''}`} style={{ fontSize: '0.8rem' }}>
-                                                                                    {sub.name}
-                                                                                </Link>
+                                                                                <div key={sIdx} style={{ position: 'relative' }}>
+                                                                                    <Link
+                                                                                        to={getLinkPath(sub)}
+                                                                                        className={`${styles.submenuItem} ${location.pathname === getLinkPath(sub) ? styles.active : ''}`}
+                                                                                        style={{ fontSize: '0.8rem', paddingRight: '2rem' }}
+                                                                                    >
+                                                                                        {sub.name}
+                                                                                    </Link>
+                                                                                    <button
+                                                                                        onClick={(e) => {
+                                                                                            e.preventDefault()
+                                                                                            e.stopPropagation()
+                                                                                            handleDeleteCategory(item.key, sub.key, sub.name)
+                                                                                        }}
+                                                                                        style={{
+                                                                                            position: 'absolute',
+                                                                                            right: '5px',
+                                                                                            top: '50%',
+                                                                                            transform: 'translateY(-50%)',
+                                                                                            border: 'none',
+                                                                                            background: 'transparent',
+                                                                                            cursor: 'pointer',
+                                                                                            color: '#ef4444',
+                                                                                            padding: '4px',
+                                                                                            display: 'flex',
+                                                                                            alignItems: 'center',
+                                                                                            justifyContent: 'center',
+                                                                                            opacity: 0.6
+                                                                                        }}
+                                                                                        onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
+                                                                                        onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
+                                                                                        title="Eliminar apartado"
+                                                                                    >
+                                                                                        <Trash2 size={12} />
+                                                                                    </button>
+                                                                                </div>
                                                                             )
                                                                         })}
 

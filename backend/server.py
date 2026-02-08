@@ -40,6 +40,7 @@ DEFAULT_STRUCTURE = [
     { "name": "IV. Fletes y Acarreos", "key": "Fletes" },
     {
         "name": "V. Gastos de Oficina",
+        "key": "Gastos de Oficina",
         "isGroup": True,
         "subItems": [
             { "name": "a. Papelería y Útiles", "key": "Papelería y Útiles" },
@@ -146,6 +147,34 @@ def add_subcategory(req: AddCategoryRequest):
     save_structure(structure)
     ensure_folders_from_structure()
     
+    return {"status": "success", "structure": structure}
+
+class DeleteCategoryRequest(BaseModel):
+    key: str
+    parent_key: str
+
+@app.post("/api/categories/delete")
+def delete_subcategory(req: DeleteCategoryRequest):
+    structure = load_structure()
+    
+    # Find parent
+    parent = None
+    for item in structure:
+        if item["key"] == req.parent_key:
+            parent = item
+            break
+            
+    if not parent:
+         return {"status": "error", "message": "Categoría padre no encontrada"}
+         
+    # Remove item
+    original_len = len(parent.get("subItems", []))
+    parent["subItems"] = [sub for sub in parent["subItems"] if sub["key"] != req.key]
+    
+    if len(parent["subItems"]) == original_len:
+        return {"status": "error", "message": "Subcategoría no encontrada"}
+
+    save_structure(structure)
     return {"status": "success", "structure": structure}
 
 @app.get("/")
@@ -256,7 +285,8 @@ def obtener_resumen_financiero():
     
     # Global accumulators if needed, but per-category is primary
     
-    for categoria in CATEGORIAS:
+    cats = get_all_categories_flat()
+    for categoria in cats:
         carpeta_cat = os.path.join(CARPETA_FACTURAS, categoria)
         
         # Totales por Categoria

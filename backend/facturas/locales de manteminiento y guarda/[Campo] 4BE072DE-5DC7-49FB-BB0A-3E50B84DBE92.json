@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "4BE072DE-5DC7-49FB-BB0A-3E50B84DBE92",
+  "rfc_emisor": "RDI841003QJ4",
+  "rfc_receptor": "DIC9003083G6",
+  "nombre_emisor": "RADIOMOVIL DIPSA",
+  "nombre_receptor": "DEMAR INSTALADORA Y CONSTRUCTORA",
+  "puesto": "Tipo Base Importe",
+  "subtotal": "9397.06",
+  "total_deducciones": "20000",
+  "total_neto": "15000",
+  "categoria": "locales de manteminiento y guarda",
+  "origen": "Campo"
+}

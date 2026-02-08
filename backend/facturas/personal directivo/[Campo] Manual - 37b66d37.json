@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "D17CCC4-37B3-479F-826F-5A954B2BFC21",
+  "rfc_emisor": "DIC9003083G6",
+  "rfc_receptor": "RELJ860904EX1",
+  "nombre_emisor": "DEMAR ",
+  "nombre_receptor": "JESUS MOISES REYNA LOPEZ",
+  "puesto": "COORDINADOR DE PRUEBAS Y ARRANQUES",
+  "subtotal": "85101.35",
+  "total_deducciones": "19321.35",
+  "total_neto": "65780",
+  "categoria": "personal directivo",
+  "origen": "Campo"
+}

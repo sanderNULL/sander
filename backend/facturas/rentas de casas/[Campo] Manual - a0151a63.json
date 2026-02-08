@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "jdjdjdjdjfjdpfpjfp23fr",
+  "rfc_emisor": "",
+  "rfc_receptor": "",
+  "nombre_emisor": "",
+  "nombre_receptor": "",
+  "puesto": "",
+  "subtotal": "15000",
+  "total_deducciones": "1000",
+  "total_neto": "20000",
+  "categoria": "rentas de casas",
+  "origen": "Campo"
+}

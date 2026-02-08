@@ -1,11 +1,25 @@
 [
   {
     "name": "I. Honorarios, Sueldos y Prestaciones",
-    "key": "Honorarios"
+    "key": "Honorarios",
+    "isGroup": true,
+    "subItems": [
+      {
+        "name": "b. personal administrativo ",
+        "key": "personal administrativo"
+      }
+    ]
   },
   {
     "name": "II. Depreciación, Mantenimiento y Rentas",
-    "key": "Depreciación"
+    "key": "Depreciación",
+    "isGroup": true,
+    "subItems": [
+      {
+        "name": "b. locales de manteminiento y guarda ",
+        "key": "locales de manteminiento y guarda"
+      }
+    ]
   },
   {
     "name": "III. Servicios",
@@ -17,6 +31,7 @@
   },
   {
     "name": "V. Gastos de Oficina",
+    "key": "Gastos de Oficina",
     "isGroup": true,
     "subItems": [
       {
@@ -26,18 +41,6 @@
       {
         "name": "b. Comunicaciones, Fax...",
         "key": "Comunicaciones y Radios"
-      },
-      {
-        "name": "c. Equipo de Cómputo",
-        "key": "Equipo de Cómputo"
-      },
-      {
-        "name": "d. sander",
-        "key": "sander"
-      },
-      {
-        "name": "e. Refacciones",
-        "key": "Refacciones"
       }
     ]
   },
@@ -51,7 +54,14 @@
   },
   {
     "name": "VIII. Seguros y Fianzas",
-    "key": "Seguros"
+    "key": "Seguros",
+    "isGroup": true,
+    "subItems": [
+      {
+        "name": "a. facturas de empleados ",
+        "key": "facturas de empleados"
+      }
+    ]
   },
   {
     "name": "IX. Trabajos Previos y Auxiliares",

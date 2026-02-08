@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "2E76DE0E-C007-4E42-85CF-3976132FA081",
+  "rfc_emisor": "RDI841003QJ4",
+  "rfc_receptor": "DIC9003083G6",
+  "nombre_emisor": "RADIOMOVIL DIPSA",
+  "nombre_receptor": "DEMAR INSTALADORA Y CONSTRUCTORA",
+  "puesto": "Tipo Base Importe",
+  "subtotal": "8187.36",
+  "total_deducciones": "",
+  "total_neto": "",
+  "categoria": "personal directivo",
+  "origen": "Campo"
+}

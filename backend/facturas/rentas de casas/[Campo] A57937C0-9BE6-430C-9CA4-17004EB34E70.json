@@ -1,0 +1,13 @@
+{
+  "folio_fiscal": "A57937C0-9BE6-430C-9CA4-17004EB34E70",
+  "rfc_emisor": "RDI841003QJ4",
+  "rfc_receptor": "DIC9003083G6",
+  "nombre_emisor": "RADIOMOVIL DIPSA",
+  "nombre_receptor": "DEMAR INSTALADORA Y CONSTRUCTORA",
+  "puesto": "Tipo Base Importe",
+  "subtotal": "8765.40",
+  "total_deducciones": "2450",
+  "total_neto": "20000",
+  "categoria": "rentas de casas",
+  "origen": "Campo"
+}
